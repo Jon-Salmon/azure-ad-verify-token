@@ -34,6 +34,7 @@
     "test": "jest",
     "build": "tsc -p ./tsconfig.json",
     "prepublishOnly": "npm run build",
+    "prepare": "npm run build",
     "release": "standard-version",
     "format": "prettier --write ."
   },
