@@ -53,7 +53,7 @@ function getPublicKey(jwksUri: string, kid: string) {
  * @param options Configuration options.
  */
 export function verify(token: string, options: VerifyOptions) {
-  const { jwksUri, audience, issuer } = options;
+  const { jwksUri, audience, issuer, clockTolerance } = options;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let decoded: { [key: string]: any };
   let kid: string;
@@ -74,6 +74,7 @@ export function verify(token: string, options: VerifyOptions) {
       algorithms: ['RS256'],
       audience,
       issuer,
+      clockTolerance,
     })
   );
 }

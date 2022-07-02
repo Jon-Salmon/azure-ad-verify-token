@@ -26,6 +26,11 @@ export interface VerifyOptions {
    * Application ID of the application accessing the tenant.
    */
   audience: string;
+
+  /**
+   * Tolerance (in seconds) used when verifying jwt nbf claims
+   */
+   clockTolerance?: number;
 }
 
 /**
