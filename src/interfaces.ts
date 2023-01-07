@@ -48,6 +48,11 @@ export interface CacheItem {
   done?: (value: string) => void;
 
   /**
+   * Reject function from `value`'s promise.
+   */
+  error?: (reason?: any) => void;
+
+  /**
    * Date, in milliseconds, the cache will be considered expired.
    */
   expiry: number;

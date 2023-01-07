@@ -29,13 +29,10 @@ function getPublicKey(jwksUri: string, kid: string) {
         const existing = getItem(key.kid);
         const pem: string = getPem(key.n, key.e);
 
-        if (kid === key.kid) {
-          foundPem = true;
-        }
-
         if (existing && existing.done) {
           // deferred item
           existing.done(pem);
+          foundPem = true;
         } else {
           setItem(key.kid, pem);
         }
@@ -43,9 +40,11 @@ function getPublicKey(jwksUri: string, kid: string) {
 
       item = getItem(kid);
 
-      if (!foundPem || !item) {
-        removeItem(kid);
+      if (!item) {
         throw new Error('public key not found');
+      } else if (!foundPem) {
+        item.error('public key not found');
+        removeItem(kid);
       }
 
       return item.result;
