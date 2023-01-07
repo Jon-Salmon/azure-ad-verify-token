@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken';
 import fetch from 'node-fetch';
 import getPem from 'rsa-pem-from-mod-exp';
 
-import { getItem, setDeferredItem, setItem } from './cache';
+import { getItem, setDeferredItem, setItem, removeItem } from './cache';
 import { AzureJwks, VerifyOptions } from './interfaces';
 
 /**
@@ -20,6 +20,7 @@ function getPublicKey(jwksUri: string, kid: string) {
 
   // immediately defer to prevent duplicate calls to get jwks
   setDeferredItem(kid);
+  let foundPem = false;
 
   return fetch(jwksUri)
     .then<AzureJwks>((res) => res.json())
@@ -27,6 +28,10 @@ function getPublicKey(jwksUri: string, kid: string) {
       res.keys.forEach((key) => {
         const existing = getItem(key.kid);
         const pem: string = getPem(key.n, key.e);
+
+        if (kid === key.kid) {
+          foundPem = true;
+        }
 
         if (existing && existing.done) {
           // deferred item
@@ -38,7 +43,8 @@ function getPublicKey(jwksUri: string, kid: string) {
 
       item = getItem(kid);
 
-      if (!item || !item.done) {
+      if (!foundPem || !item) {
+        removeItem(kid);
         throw new Error('public key not found');
       }
 
