@@ -20,7 +20,7 @@ export interface VerifyOptions {
   /**
    * `issuer` value obtained from B2C policy metadata endpoint.
    */
-  issuer: string;
+  issuer: string | string[];
 
   /**
    * Application ID of the application accessing the tenant.
